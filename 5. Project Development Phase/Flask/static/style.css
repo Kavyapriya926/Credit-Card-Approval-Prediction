@@ -1,0 +1,372 @@
+:root {
+    --navy: #0B3D65;
+    --navy-deep: #072943;
+    --navy-soft: #E8F1F8;
+    --gold: #B8860B;
+    --gold-soft: #FDF3DC;
+    --ink: #1B2733;
+    --slate: #5B6B7A;
+    --line: #DCE3EA;
+    --paper: #F7F9FB;
+    --approve: #1B7A43;
+    --approve-soft: #E4F5EA;
+    --reject: #B23A3A;
+    --reject-soft: #FBEAEA;
+    --radius: 10px;
+    --font-display: 'Source Serif 4', Georgia, serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: var(--font-body);
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Navbar ---------- */
+.navbar {
+    background: var(--navy-deep);
+    border-bottom: 3px solid var(--gold);
+}
+.navbar-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: white;
+}
+.brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--gold) 0%, #8f6a08 100%);
+    color: var(--navy-deep);
+    font-weight: 700;
+    font-family: var(--font-display);
+    font-size: 15px;
+}
+.brand-text {
+    font-family: var(--font-display);
+    font-size: 19px;
+    letter-spacing: 0.2px;
+}
+.navbar-tag {
+    color: #B9C7D4;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+}
+
+/* ---------- Layout ---------- */
+.page {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 48px 24px 64px;
+}
+
+.site-footer {
+    text-align: center;
+    color: var(--slate);
+    font-size: 12.5px;
+    padding: 24px;
+    border-top: 1px solid var(--line);
+    background: white;
+}
+
+/* ---------- Hero / card visual ---------- */
+.hero {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 40px;
+    align-items: center;
+    margin-bottom: 48px;
+}
+@media (max-width: 800px) {
+    .hero { grid-template-columns: 1fr; }
+}
+.hero-eyebrow {
+    font-size: 12.5px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.hero h1 {
+    font-family: var(--font-display);
+    font-size: 38px;
+    line-height: 1.15;
+    margin: 0 0 14px;
+    color: var(--navy-deep);
+}
+.hero p {
+    color: var(--slate);
+    font-size: 16px;
+    line-height: 1.6;
+    max-width: 46ch;
+}
+
+.credit-card {
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+    aspect-ratio: 1.586;
+    margin-left: auto;
+    border-radius: 18px;
+    padding: 26px;
+    background: linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 55%, #124a78 100%);
+    color: white;
+    box-shadow: 0 24px 48px -18px rgba(7, 41, 67, 0.55);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+}
+.credit-card::before {
+    content: "";
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(184,134,11,0.35), transparent 70%);
+}
+.credit-card .chip {
+    width: 40px;
+    height: 30px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #E8CE7B, #B8860B);
+}
+.credit-card .card-number {
+    font-family: var(--font-display);
+    font-size: 19px;
+    letter-spacing: 3px;
+}
+.credit-card .card-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    letter-spacing: 0.6px;
+    color: #C9D6E2;
+    text-transform: uppercase;
+}
+.credit-card .card-brand {
+    align-self: flex-end;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--gold);
+}
+
+/* ---------- Form ---------- */
+.form-card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 32px;
+    box-shadow: 0 1px 2px rgba(11,61,101,0.04);
+}
+.form-section-title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    color: var(--navy);
+    margin: 0 0 4px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+}
+.form-section {
+    margin-bottom: 28px;
+}
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px 24px;
+    margin-top: 18px;
+}
+@media (max-width: 650px) {
+    .form-grid { grid-template-columns: 1fr; }
+}
+.field label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--navy-deep);
+    margin-bottom: 6px;
+    letter-spacing: 0.2px;
+}
+.field .hint {
+    display: block;
+    font-size: 11.5px;
+    color: var(--slate);
+    margin-top: 4px;
+}
+.field input,
+.field select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--paper);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.field input:focus,
+.field select:focus {
+    outline: none;
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px var(--navy-soft);
+    background: white;
+}
+
+.submit-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 32px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.btn-primary {
+    background: var(--navy);
+    color: white;
+    border: none;
+    padding: 13px 28px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+.btn-primary:hover { background: var(--navy-deep); }
+.btn-primary:active { transform: translateY(1px); }
+.submit-note {
+    font-size: 12.5px;
+    color: var(--slate);
+}
+
+.alert {
+    padding: 14px 16px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    margin-bottom: 20px;
+}
+.alert-error {
+    background: var(--reject-soft);
+    color: var(--reject);
+    border: 1px solid #f0c6c6;
+}
+
+/* ---------- Result page ---------- */
+.result-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
+}
+.result-card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 48px 44px;
+    max-width: 460px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 40px -20px rgba(11,61,101,0.25);
+}
+.result-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 30px;
+    font-weight: 700;
+}
+.result-icon.approved { background: var(--approve-soft); color: var(--approve); }
+.result-icon.rejected { background: var(--reject-soft); color: var(--reject); }
+
+.result-status {
+    font-family: var(--font-display);
+    font-size: 28px;
+    margin: 0 0 8px;
+}
+.result-status.approved { color: var(--approve); }
+.result-status.rejected { color: var(--reject); }
+
+.result-sub {
+    color: var(--slate);
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+.confidence-bar-track {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--line);
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+.confidence-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--navy);
+}
+.confidence-label {
+    font-size: 12px;
+    color: var(--slate);
+    margin-bottom: 24px;
+}
+.back-link {
+    display: inline-block;
+    margin-top: 8px;
+    color: var(--navy);
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 2px;
+}
+
+/* ---------- 404 page ---------- */
+.error-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 60px 0;
+    text-align: center;
+}
+.error-code {
+    font-family: var(--font-display);
+    font-size: 88px;
+    color: var(--navy);
+    margin: 0;
+    line-height: 1;
+}
+.error-title {
+    font-size: 18px;
+    color: var(--ink);
+    margin: 12px 0 8px;
+}
+.error-sub {
+    color: var(--slate);
+    font-size: 14px;
+    margin-bottom: 24px;
+}

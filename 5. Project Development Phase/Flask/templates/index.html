@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block title %}Apply - Credit Card Approval Prediction{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div>
+        <div class="hero-eyebrow">Instant Decision Engine</div>
+        <h1>Know your credit card decision in seconds, not days.</h1>
+        <p>Enter the applicant's details below. Our model - trained and compared across
+        four algorithms on historical approval data - returns an Approved or Rejected
+        decision instantly, replacing slow manual review.</p>
+    </div>
+    <div class="credit-card">
+        <div class="chip"></div>
+        <div class="card-number">•••• •••• •••• 4029</div>
+        <div class="card-row">
+            <span>Applicant</span>
+            <span>Valid Thru</span>
+        </div>
+        <div class="card-brand">CreditApprove</div>
+    </div>
+</section>
+
+{% if error %}
+<div class="alert alert-error">{{ error }}</div>
+{% endif %}
+
+<form class="form-card" action="{{ url_for('predict') }}" method="POST">
+
+    <div class="form-section">
+        <h2 class="form-section-title">Personal &amp; Demographic Details</h2>
+        <div class="form-grid">
+            <div class="field">
+                <label for="Gender">Gender Category</label>
+                <select name="Gender" id="Gender" required>
+                    <option value="" disabled {% if not form_data %}selected{% endif %}>Select</option>
+                    {% for opt in category_options['Gender'] %}
+                    <option value="{{ opt }}" {% if form_data and form_data['Gender']==opt %}selected{% endif %}>{{ opt|upper }}</option>
+                    {% endfor %}
+                </select>
+                <span class="hint">Anonymized category, as encoded in the training dataset.</span>
+            </div>
+            <div class="field">
+                <label for="Age">Age (years)</label>
+                <input type="number" step="0.1" min="18" max="100" name="Age" id="Age" required
+                       value="{{ form_data['Age'] if form_data else '' }}">
+            </div>
+            <div class="field">
+                <label for="Married">Marital Status Category</label>
+                <select name="Married" id="Married" required>
+                    <option value="" disabled {% if not form_data %}selected{% endif %}>Select</option>
+                    {% for opt in category_options['Married'] %}
+                    <option value="{{ opt }}" {% if form_data and form_data['Married']==opt %}selected{% endif %}>{{ opt|upper }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="field">
+                <label for="Ethnicity">Ethnicity Category</label>
+                <select name="Ethnicity" id="Ethnicity" required>
+                    <option value="" disabled {% if not form_data %}selected{% endif %}>Select</option>
+                    {% for opt in category_options['Ethnicity'] %}
+                    <option value="{{ opt }}" {% if form_data and form_data['Ethnicity']==opt %}selected{% endif %}>{{ opt|upper }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="field">
+                <label for="Citizen">Citizenship Category</label>
+                <select name="Citizen" id="Citizen" required>
+                    <option value="" disabled {% if not form_data %}selected{% endif %}>Select</option>
+                    {% for opt in category_options['Citizen'] %}
+                    <option value="{{ opt }}" {% if form_data and form_data['Citizen']==opt %}selected{% endif %}>{{ opt|upper }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="field">
+                <label for="EducationLevel">Education Level Category</label>
+                <select name="EducationLevel" id="EducationLevel" required>
+                    <option value="" disabled {% if not form_data %}selected{% endif %}>Select</option>
+                    {% for opt in category_options['EducationLevel'] %}
+                    <option value="{{ opt }}" {% if form_data and form_data['EducationLevel']==opt %}selected{% endif %}>{{ opt|upper }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <h2 class="form-section-title">Financial &amp; Employment Details</h2>
+        <div class="form-grid">
+            <div class="field">
+                <label for="Income">Annual Income</label>
+                <input type="number" step="1" min="0" name="Income" id="Income" required
+                       value="{{ form_data['Income'] if form_data else '' }}">
+            </div>
+            <div class="field">
+                <label for="Debt">Existing Debt Level</label>
+                <input type="number" step="0.01" min="0" name="Debt" id="Debt" required
+                       value="{{ form_data['Debt'] if form_data else '' }}">
+            </div>
+            <div class="field">
+                <label for="CreditScore">Credit Score</label>
+                <input type="number" step="1" min="0" name="CreditScore" id="CreditScore" required
+                       value="{{ form_data['CreditScore'] if form_data else '' }}">
+            </div>
+            <div class="field">
+                <label for="YearsEmployed">Years Employed</label>
+                <input type="number" step="0.1" min="0" name="YearsEmployed" id="YearsEmployed" required
+                       value="{{ form_data['YearsEmployed'] if form_data else '' }}">
+            </div>
+            <div class="field">
+                <label for="BankCustomer">Bank Customer Category</label>
+                <select name="BankCustomer" id="BankCustomer" required>
+                    <option value="" disabled {% if not form_data %}selected{% endif %}>Select</option>
+                    {% for opt in category_options['BankCustomer'] %}
+                    <option value="{{ opt }}" {% if form_data and form_data['BankCustomer']==opt %}selected{% endif %}>{{ opt|upper }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="field">
+                <label for="Employed">Currently Employed</label>
+                <select name="Employed" id="Employed" required>
+                    <option value="" disabled {% if not form_data %}selected{% endif %}>Select</option>
+                    {% for opt in category_options['Employed'] %}
+                    <option value="{{ opt }}" {% if form_data and form_data['Employed']==opt %}selected{% endif %}>{{ 'Yes' if opt=='t' else 'No' }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="field">
+                <label for="PriorDefault">Prior Default on Record</label>
+                <select name="PriorDefault" id="PriorDefault" required>
+                    <option value="" disabled {% if not form_data %}selected{% endif %}>Select</option>
+                    {% for opt in category_options['PriorDefault'] %}
+                    <option value="{{ opt }}" {% if form_data and form_data['PriorDefault']==opt %}selected{% endif %}>{{ 'Yes' if opt=='t' else 'No' }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="submit-row">
+        <button type="submit" class="btn-primary">Get Prediction</button>
+        <span class="submit-note">Prediction generated by a trained ML model &middot; no data is stored</span>
+    </div>
+</form>
+{% endblock %}

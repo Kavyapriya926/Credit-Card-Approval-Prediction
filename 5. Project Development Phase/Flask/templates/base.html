@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Credit Card Approval Prediction{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="{{ url_for('index') }}" class="brand">
+                <span class="brand-mark">CC</span>
+                <span class="brand-text">Credit<strong>Approve</strong></span>
+            </a>
+            <span class="navbar-tag">Credit Card Approval Prediction System</span>
+        </div>
+    </nav>
+
+    <main class="page">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <p>SmartBridge AI/ML Internship &middot; Team SWTID-2026-9508 &middot; Credit Card Approval Prediction System</p>
+    </footer>
+</body>
+</html>

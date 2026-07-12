@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Prediction Result - Credit Card Approval Prediction{% endblock %}
+
+{% block content %}
+<div class="result-wrap">
+    <div class="result-card">
+        {% if error %}
+            <div class="result-icon rejected">!</div>
+            <h1 class="result-status rejected">Unable to Generate Prediction</h1>
+            <p class="result-sub">{{ error }}</p>
+        {% else %}
+            {% if result == "Approved" %}
+                <div class="result-icon approved">&#10003;</div>
+                <h1 class="result-status approved">Application Approved</h1>
+                <p class="result-sub">Based on the details provided, the model predicts this application is likely to be approved.</p>
+            {% else %}
+                <div class="result-icon rejected">&#10005;</div>
+                <h1 class="result-status rejected">Application Rejected</h1>
+                <p class="result-sub">Based on the details provided, the model predicts this application is likely to be rejected.</p>
+            {% endif %}
+
+            {% if confidence is not none %}
+            <div class="confidence-bar-track">
+                <div class="confidence-bar-fill" style="width: {{ confidence }}%;"></div>
+            </div>
+            <p class="confidence-label">Model confidence (probability of approval): {{ confidence }}%</p>
+            {% endif %}
+        {% endif %}
+
+        <a href="{{ url_for('index') }}" class="back-link">&larr; Submit another application</a>
+    </div>
+</div>
+{% endblock %}
