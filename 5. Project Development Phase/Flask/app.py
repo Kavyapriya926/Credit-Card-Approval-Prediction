@@ -6,6 +6,16 @@ This Flask app loads the pre-trained ML model (best of Logistic Regression,
 Decision Tree, Random Forest, XGBoost - selected in the training notebook)
 and serves a web form where a bank officer or applicant can enter applicant
 details and instantly receive an Approved / Rejected prediction.
+
+FIX (from the previous version): dropdown options are no longer hardcoded.
+Hardcoding CATEGORY_OPTIONS is what caused the mismatch you saw (dropdowns
+showing meaningless codes like "a"/"b" instead of real category names) -
+whatever the model's encoders were actually fit on, the hardcoded dict could
+silently drift out of sync with it. This version reads the valid category
+values directly off each column's fitted LabelEncoder (`encoders[col].classes_`)
+at startup, so the form always matches the model exactly - no matter which
+dataset it was trained on. It also auto-detects which columns are numeric
+vs. categorical instead of relying on a hand-maintained NUMERIC_FIELDS list.
 """
 
 import os
@@ -25,6 +35,33 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_DIR = os.path.join(BASE_DIR, "..", "Model")
 
+# Optional: friendlier display text for common raw values, without changing
+# what actually gets submitted to the model. Add to this as needed - if a
+# raw value isn't listed here, the raw value itself is shown as-is.
+DISPLAY_LABELS = {
+    "M": "Male",
+    "F": "Female",
+    "Y": "Yes",
+    "N": "No",
+}
+
+# Friendlier labels for the form field names themselves (falls back to the
+# raw column name if not listed here).
+FIELD_LABELS = {
+    "CODE_GENDER": "Gender",
+    "FLAG_OWN_CAR": "Owns a Car",
+    "FLAG_OWN_REALTY": "Owns Property",
+    "CNT_CHILDREN": "Number of Children",
+    "AMT_INCOME_TOTAL": "Annual Income",
+    "NAME_INCOME_TYPE": "Income Type",
+    "NAME_EDUCATION_TYPE": "Education Level",
+    "NAME_FAMILY_STATUS": "Family Status",
+    "NAME_HOUSING_TYPE": "Housing Type",
+    "DAYS_BIRTH": "Age (days, negative = past)",
+    "DAYS_EMPLOYED": "Days Employed",
+    "CNT_FAM_MEMBERS": "Family Members",
+}
+
 # ------------------------------------------------------------------
 # Load model artifacts once at startup (not per-request, for performance)
 # ------------------------------------------------------------------
@@ -34,23 +71,31 @@ try:
     scaler = joblib.load(os.path.join(MODEL_DIR, "scaler.pkl"))
     feature_columns = joblib.load(os.path.join(MODEL_DIR, "feature_columns.pkl"))
     logger.info("Model artifacts loaded successfully.")
+
+    # Any column that has a fitted LabelEncoder is categorical; everything
+    # else in feature_columns is treated as numeric. This is derived from
+    # the actual trained artifacts, not hardcoded, so it can never drift
+    # out of sync with the model like the old CATEGORY_OPTIONS dict did.
+    CATEGORICAL_FIELDS = [c for c in feature_columns if c in encoders]
+    NUMERIC_FIELDS = [c for c in feature_columns if c not in encoders]
+
+    # Build dropdown options straight from each encoder's known classes,
+    # with a friendly display label alongside the raw value that actually
+    # gets submitted.
+    CATEGORY_OPTIONS = {
+        col: [
+            {"value": raw_value, "label": DISPLAY_LABELS.get(raw_value, raw_value)}
+            for raw_value in encoders[col].classes_
+        ]
+        for col in CATEGORICAL_FIELDS
+    }
+
 except Exception as e:
     logger.error(f"Failed to load model artifacts: {e}")
     model = encoders = scaler = feature_columns = None
-
-# Dropdown options for anonymized categorical fields (values match training data)
-CATEGORY_OPTIONS = {
-    "Gender": ["a", "b"],
-    "Married": ["l", "u", "y"],
-    "BankCustomer": ["g", "gg", "p"],
-    "EducationLevel": ["aa", "c", "cc", "d", "e", "ff", "i", "j", "k", "m", "q", "r", "w", "x"],
-    "Ethnicity": ["bb", "dd", "ff", "h", "j", "n", "o", "v", "z"],
-    "PriorDefault": ["f", "t"],
-    "Employed": ["f", "t"],
-    "Citizen": ["g", "p", "s"],
-}
-
-NUMERIC_FIELDS = ["Age", "Debt", "YearsEmployed", "CreditScore", "Income"]
+    CATEGORICAL_FIELDS = []
+    NUMERIC_FIELDS = []
+    CATEGORY_OPTIONS = {}
 
 
 def build_feature_vector(form_data):
@@ -62,11 +107,17 @@ def build_feature_vector(form_data):
     for col in feature_columns:
         value = form_data.get(col)
         if col in NUMERIC_FIELDS:
-            row.append(float(value))
+            try:
+                row.append(float(value))
+            except (TypeError, ValueError):
+                raise ValueError(f"'{FIELD_LABELS.get(col, col)}' must be a number.")
         else:
             le = encoders[col]
             if value not in le.classes_:
-                raise ValueError(f"Invalid value '{value}' for field '{col}'")
+                raise ValueError(
+                    f"Invalid value '{value}' for field '{FIELD_LABELS.get(col, col)}'. "
+                    f"Expected one of: {', '.join(le.classes_)}"
+                )
             row.append(int(le.transform([value])[0]))
     X = pd.DataFrame([row], columns=feature_columns)
     X_scaled = scaler.transform(X)
@@ -80,6 +131,7 @@ def index():
         "index.html",
         category_options=CATEGORY_OPTIONS,
         numeric_fields=NUMERIC_FIELDS,
+        field_labels=FIELD_LABELS,
     )
 
 
@@ -95,11 +147,13 @@ def predict():
         # Basic validation: all fields must be present
         missing = [c for c in feature_columns if c not in form_data or form_data[c] == ""]
         if missing:
+            missing_labels = [FIELD_LABELS.get(c, c) for c in missing]
             return render_template(
                 "index.html",
                 category_options=CATEGORY_OPTIONS,
                 numeric_fields=NUMERIC_FIELDS,
-                error=f"Missing required field(s): {', '.join(missing)}",
+                field_labels=FIELD_LABELS,
+                error=f"Missing required field(s): {', '.join(missing_labels)}",
                 form_data=form_data,
             )
 
@@ -120,6 +174,7 @@ def predict():
             "index.html",
             category_options=CATEGORY_OPTIONS,
             numeric_fields=NUMERIC_FIELDS,
+            field_labels=FIELD_LABELS,
             error=str(ve),
             form_data=request.form.to_dict(),
         )
