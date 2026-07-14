@@ -39,27 +39,85 @@ MODEL_DIR = os.path.join(BASE_DIR, "..", "Model")
 # what actually gets submitted to the model. Add to this as needed - if a
 # raw value isn't listed here, the raw value itself is shown as-is.
 DISPLAY_LABELS = {
-    "M": "Male",
-    "F": "Female",
-    "Y": "Yes",
-    "N": "No",
+    "Gender": {
+        "a": "Male",
+        "b": "Female",
+    },
+
+    "Married": {
+        "l": "Legally Separated",
+        "u": "Unmarried",
+        "y": "Married",
+    },
+
+    "BankCustomer": {
+        "g": "Government",
+        "gg": "Private",
+        "p": "Public",
+    },
+
+    "EducationLevel": {
+        "aa": "Primary School",
+        "c": "High School",
+        "cc": "Intermediate",
+        "d": "Diploma",
+        "e": "Graduate",
+        "ff": "Post Graduate",
+        "i": "Professional",
+        "j": "Doctorate",
+        "k": "Technical",
+        "m": "Vocational",
+        "q": "Other",
+        "r": "Unknown",
+        "w": "Special",
+        "x": "Not Specified",
+    },
+
+    "Ethnicity": {
+        "bb": "Asian",
+        "dd": "African",
+        "ff": "European",
+        "h": "Hispanic",
+        "j": "Middle Eastern",
+        "n": "Native",
+        "o": "Other",
+        "v": "Mixed",
+        "z": "Unknown",
+    },
+
+    "PriorDefault": {
+        "t": "Yes",
+        "f": "No",
+    },
+
+    "Employed": {
+        "t": "Yes",
+        "f": "No",
+    },
+
+    "Citizen": {
+        "g": "Citizen",
+        "p": "Permanent Resident",
+        "s": "Foreign Citizen",
+    },
 }
 
 # Friendlier labels for the form field names themselves (falls back to the
 # raw column name if not listed here).
 FIELD_LABELS = {
-    "CODE_GENDER": "Gender",
-    "FLAG_OWN_CAR": "Owns a Car",
-    "FLAG_OWN_REALTY": "Owns Property",
-    "CNT_CHILDREN": "Number of Children",
-    "AMT_INCOME_TOTAL": "Annual Income",
-    "NAME_INCOME_TYPE": "Income Type",
-    "NAME_EDUCATION_TYPE": "Education Level",
-    "NAME_FAMILY_STATUS": "Family Status",
-    "NAME_HOUSING_TYPE": "Housing Type",
-    "DAYS_BIRTH": "Age (days, negative = past)",
-    "DAYS_EMPLOYED": "Days Employed",
-    "CNT_FAM_MEMBERS": "Family Members",
+    "Gender": "Gender",
+    "Age": "Age",
+    "Married": "Marital Status",
+    "BankCustomer": "Bank Customer",
+    "EducationLevel": "Education Level",
+    "Ethnicity": "Ethnicity",
+    "YearsEmployed": "Years Employed",
+    "PriorDefault": "Prior Default",
+    "Employed": "Currently Employed",
+    "CreditScore": "Credit Score",
+    "Citizen": "Citizenship",
+    "Income": "Annual Income",
+    "Debt": "Debt",
 }
 
 # ------------------------------------------------------------------
@@ -70,7 +128,9 @@ try:
     encoders = joblib.load(os.path.join(MODEL_DIR, "encoders.pkl"))
     scaler = joblib.load(os.path.join(MODEL_DIR, "scaler.pkl"))
     feature_columns = joblib.load(os.path.join(MODEL_DIR, "feature_columns.pkl"))
-    logger.info("Model artifacts loaded successfully.")
+    print("Feature Columns:")
+    for col in feature_columns:
+        print(col)
 
     # Any column that has a fitted LabelEncoder is categorical; everything
     # else in feature_columns is treated as numeric. This is derived from
@@ -83,13 +143,15 @@ try:
     # with a friendly display label alongside the raw value that actually
     # gets submitted.
     CATEGORY_OPTIONS = {
-        col: [
-            {"value": raw_value, "label": DISPLAY_LABELS.get(raw_value, raw_value)}
-            for raw_value in encoders[col].classes_
-        ]
-        for col in CATEGORICAL_FIELDS
-    }
-
+    col: [
+        {
+            "value": value,
+            "label": DISPLAY_LABELS.get(col, {}).get(value, value)
+        }
+        for value in encoders[col].classes_
+    ]
+    for col in CATEGORICAL_FIELDS
+}
 except Exception as e:
     logger.error(f"Failed to load model artifacts: {e}")
     model = encoders = scaler = feature_columns = None

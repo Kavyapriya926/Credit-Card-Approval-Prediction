@@ -35,8 +35,10 @@
                 <select name="Gender" id="Gender" required>
                     <option value="" disabled {% if not form_data %}selected{% endif %}>Select</option>
                     {% for opt in category_options['Gender'] %}
-                    <option value="{{ opt }}" {% if form_data and form_data['Gender']==opt %}selected{% endif %}>{{ opt|upper }}</option>
-                    {% endfor %}
+<option value="{{ opt.value }}" {% if form_data and form_data['Gender']==opt.value %}selected{% endif %}>
+    {{ opt.label }}
+</option>
+{% endfor %}
                 </select>
                 <span class="hint">Anonymized category, as encoded in the training dataset.</span>
             </div>
@@ -50,8 +52,11 @@
                 <select name="Married" id="Married" required>
                     <option value="" disabled {% if not form_data %}selected{% endif %}>Select</option>
                     {% for opt in category_options['Married'] %}
-                    <option value="{{ opt }}" {% if form_data and form_data['Married']==opt %}selected{% endif %}>{{ opt|upper }}</option>
-                    {% endfor %}
+<option value="{{ opt.value }}"
+    {% if form_data and form_data['Married']==opt.value %}selected{% endif %}>
+    {{ opt.label }}
+</option>
+{% endfor %}
                 </select>
             </div>
             <div class="field">
@@ -59,8 +64,10 @@
                 <select name="Ethnicity" id="Ethnicity" required>
                     <option value="" disabled {% if not form_data %}selected{% endif %}>Select</option>
                     {% for opt in category_options['Ethnicity'] %}
-                    <option value="{{ opt }}" {% if form_data and form_data['Ethnicity']==opt %}selected{% endif %}>{{ opt|upper }}</option>
-                    {% endfor %}
+<option value="{{ opt.value }}" {% if form_data and form_data['Ethnicity']==opt.value %}selected{% endif %}>
+    {{ opt.label }}
+</option>
+{% endfor %}
                 </select>
             </div>
             <div class="field">
@@ -68,8 +75,10 @@
                 <select name="Citizen" id="Citizen" required>
                     <option value="" disabled {% if not form_data %}selected{% endif %}>Select</option>
                     {% for opt in category_options['Citizen'] %}
-                    <option value="{{ opt }}" {% if form_data and form_data['Citizen']==opt %}selected{% endif %}>{{ opt|upper }}</option>
-                    {% endfor %}
+<option value="{{ opt.value }}" {% if form_data and form_data['Citizen']==opt.value %}selected{% endif %}>
+    {{ opt.label }}
+</option>
+{% endfor %}
                 </select>
             </div>
             <div class="field">
@@ -77,8 +86,10 @@
                 <select name="EducationLevel" id="EducationLevel" required>
                     <option value="" disabled {% if not form_data %}selected{% endif %}>Select</option>
                     {% for opt in category_options['EducationLevel'] %}
-                    <option value="{{ opt }}" {% if form_data and form_data['EducationLevel']==opt %}selected{% endif %}>{{ opt|upper }}</option>
-                    {% endfor %}
+<option value="{{ opt.value }}" {% if form_data and form_data['EducationLevel']==opt.value %}selected{% endif %}>
+    {{ opt.label }}
+</option>
+{% endfor %}
                 </select>
             </div>
         </div>
@@ -112,8 +123,10 @@
                 <select name="BankCustomer" id="BankCustomer" required>
                     <option value="" disabled {% if not form_data %}selected{% endif %}>Select</option>
                     {% for opt in category_options['BankCustomer'] %}
-                    <option value="{{ opt }}" {% if form_data and form_data['BankCustomer']==opt %}selected{% endif %}>{{ opt|upper }}</option>
-                    {% endfor %}
+<option value="{{ opt.value }}" {% if form_data and form_data['BankCustomer']==opt.value %}selected{% endif %}>
+    {{ opt.label }}
+</option>
+{% endfor %}
                 </select>
             </div>
             <div class="field">
@@ -121,8 +134,10 @@
                 <select name="Employed" id="Employed" required>
                     <option value="" disabled {% if not form_data %}selected{% endif %}>Select</option>
                     {% for opt in category_options['Employed'] %}
-                    <option value="{{ opt }}" {% if form_data and form_data['Employed']==opt %}selected{% endif %}>{{ 'Yes' if opt=='t' else 'No' }}</option>
-                    {% endfor %}
+<option value="{{ opt.value }}" {% if form_data and form_data['Employed']==opt.value %}selected{% endif %}>
+    {{ opt.label }}
+</option>
+{% endfor %}
                 </select>
             </div>
             <div class="field">
@@ -130,8 +145,10 @@
                 <select name="PriorDefault" id="PriorDefault" required>
                     <option value="" disabled {% if not form_data %}selected{% endif %}>Select</option>
                     {% for opt in category_options['PriorDefault'] %}
-                    <option value="{{ opt }}" {% if form_data and form_data['PriorDefault']==opt %}selected{% endif %}>{{ 'Yes' if opt=='t' else 'No' }}</option>
-                    {% endfor %}
+<option value="{{ opt.value }}" {% if form_data and form_data['PriorDefault']==opt.value %}selected{% endif %}>
+    {{ opt.label }}
+</option>
+{% endfor %}
                 </select>
             </div>
         </div>
